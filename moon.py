@@ -2,13 +2,14 @@ import numpy as np
 import pandas as pd
 import scipy.ndimage as ndi
 import matplotlib.pyplot as plt
+from skimage.segmentation import flood
 
 
 import skimage.data
 from skimage.exposure import histogram
 from skimage.filters import sobel, threshold_otsu
 from skimage.measure import regionprops_table
-from skimage.segmentation import watershed
+from skimage.segmentation import watershed,flood
 from skimage.color import label2rgb
 from matplotlib.widgets import Slider
 
@@ -119,6 +120,76 @@ plt.axis("off")
 plt.colorbar()
 plt.show()
 
+#rgb coloured segmentation for watershedsegmentation
+
+fig, ax = plt.subplots(figsize=(12, 6))
+rgb_composite = label2rgb(
+    labeled_segmentation,
+    image=image,
+    bg_label=0
+)
+
+ax.imshow(rgb_composite)
+ax.set_title("RGB Colored Segmentation by watershed segmentation")
+plt.axis("off")
+plt.show()
+
+# Region Growing Segmentation
+seed_points = [#multiple seeds are given for starting to grow
+    (120,120),
+    (150,170),
+    (190,210),
+    (240,170),
+    (290,220)
+]
+
+tolerance = 12
+
+region_growing = np.zeros_like(image, dtype=bool)
+
+# Grow regions from each seed
+for seed in seed_points:
+    grown = flood(image, seed_point=seed, tolerance=tolerance)
+    region_growing = region_growing | grown
+
+#displaying region growing segmentationn
+plt.figure(figsize=(6,6))
+plt.imshow(region_growing, cmap="gray")
+plt.title("Region Growing Segmentation")
+plt.axis("off")
+plt.show()
+
+#label the grown region
+region_labels, num_regions = ndi.label(region_growing)
+
+print("Number of regions:", num_regions)
+
+# RGB visualization of Region Growing Segmentation
+fig, ax = plt.subplots(figsize=(12, 6))
+
+rgb_region = label2rgb(
+    region_labels,          # labeled regions
+    image=image,            # original grayscale image
+    bg_label=0              # keep background as label 0
+)
+
+ax.imshow(rgb_region)
+ax.set_title("RGB Region Growing Segmentation")
+plt.axis("off")
+plt.show()
+
+#showing labels
+plt.figure(figsize=(6,6))
+plt.imshow(region_labels, cmap="nipy_spectral") #region_labels- converts each labeled region into a different colour
+plt.title("Region Growing Labels")
+plt.colorbar()
+plt.axis("off")
+plt.show()
+
+
+
+
+
 properties= regionprops_table(#regionprops_table calculates every mesurments for every labeled objects and stores them in tabel
     labeled_segmentation,
     intensity_image=image, 
@@ -139,17 +210,31 @@ print(df.head())
 df.describe()
 print(df.describe())
 #saving the results to a CSV file
-df.to_csv("moon_blobs_analysis.csv", index=False)
-print("Data saved successfully!")
+df.to_csv("moon_watershed_segmentation_analysis.csv", index=False)
+print("Watershed Segemntation data saved successfully!")
 
 
-#rgb coloured segmentation
-fig, ax = plt.subplots(figsize=(12, 6))
-rgb_composite = label2rgb(labeled_segmentation, image=image, bg_label=0)#label 0 is treated as bg
-ax.imshow(rgb_composite)
-plt.axis('off')
-ax.set_title("RGB Colored Segmentation")
-plt.show()
+properties_rg = regionprops_table(
+    region_labels,
+    intensity_image=image,
+    properties=[
+        'label',
+        'area',
+        'centroid',
+        'bbox',
+        'eccentricity',
+        'intensity_mean'
+    ]
+)
+
+df_rg = pd.DataFrame(properties_rg)
+
+print(df_rg.head())
+
+df_rg.to_csv("moon_region_growing_analysis.csv", index=False)
+
+print("Region Growing data saved successfully!")
+
 
 
 
