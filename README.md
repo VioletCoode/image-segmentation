@@ -8,16 +8,39 @@ Features-
 
 
 -Image loading using scikit-image
+
+
 -Histogram visualization
+
+
 -Otsu's automatic thresholding
+
+
 -Interactive/manual threshold adjustment (Moon image)
+
+
 -Sobel edge detection
+
+
 -Watershed segmentation
+
+
 -Region Growing segmentation
+
+
 -Hole filling using binary_fill_holes
+
+
 -Connected component labeling
+
+
 -Region property analysis
+
+
+
 -CSV export of object measurements
+
+
 -RGB visualization of segmented regions
 
 
@@ -49,30 +72,70 @@ Processing Pipeline-
 
 
 
+
+
 Watershed Segmentation
 
 
+
+
 1.Load the grayscale image
+
+
 2.Display the histogram
+
+
 3.Apply Otsu's thresholding
+
+
 4.Detect edges using the Sobel filter
+
+
 5.Generate foreground and background markers
+
+
 6.Apply Watershed segmentation
+
+
 7.Fill enclosed holes
+
+
 8.Label connected components
+
+
 9.Extract region properties
+
+
 10.Save the results as CSV files
+
+
 11.Display the RGB segmented image
+
+
+
 
 
 Region Growing Segmentation
 
 
+
+
+
 1.Select one or more seed points
+
+
 2.Grow regions by grouping neighbouring pixels with similar intensity
+
+
 3.Label the connected regions
+
+
 4.Display RGB visualization of segmented regions
+
+
 5.Extract region properties
+
+
 6.Export the measurements to CSV
 
 
