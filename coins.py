@@ -69,7 +69,8 @@ def segment_image(threshold):
 
     #adds slider to the threshold
 
-    slider_ax = plt.axes([0.2, 0.05, 0.6, 0.03])#Python creates an empty rectangle
+    slider_ax = plt.axes([0.2, 0.05, 0.6, 0.03])#centered slider below the plots without covering the images
+    #[0.1, 0.05, 0.8, 0.03] → Longer slider  [0.3, 0.05, 0.4, 0.03] → Shorter, centered slider   0.2, 0.9, 0.6, 0.03] → Slider at the top of the figure
     
     
     slider = Slider(
@@ -135,7 +136,7 @@ plt.title("Binary Filled Holes")
 plt.axis("off")
 plt.show()
 
-#connected component labeling
+#connected component labeling;
 labeled_segmentation, _ = ndi.label(filled)
 
 plt.figure(figsize=(6, 6))
